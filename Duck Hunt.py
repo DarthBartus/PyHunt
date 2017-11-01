@@ -18,6 +18,7 @@ bullet = pygame.image.load('bullet.png')
 dog = pygame.image.load('Dog.png')
 duck_dead = pygame.image.load('Duck_Dead.png')
 duck_shot = pygame.image.load('Duck_Shot.png')
+dog_sheet = pygame.image.load('DogSheet.png')
 
 
 
@@ -108,7 +109,7 @@ def main():
             chances -= 1
         if chances <= 0:
             gameOver()
-        print(ducks_killed, rounds_left, level, duck_speed, licznik, duck, chances)
+        print(ducks_killed, rounds_left, level, duck_speed, licznik, duck, chances, fpsclock.get_fps())
     pygame.quit()
 
 def shotsfired(x,y):
@@ -167,6 +168,35 @@ def roundlost(x, y, lives):
 
 def gameOver():
     pygame.quit()
+
+def dogSpriteSheet():
+    frames = []
+    framex, framey = 110, 82
+    sheet = dog_sheet
+    sheetrect = sheet.get_rect()
+    for i in range(0, 5):
+        frames.append(sheet.subsurface(framex*i, 0, framex, framey))
+    #sheet.set_clip(pygame.Rect(0,108,109,197))
+    #frames.append(sheet.subsurface(0,108,109,197))
+    return frames
+
+
+
+def gameStartAnim():
+    pass
+
+def sheettest(frames):
+    while True:
+        displaysurf.fill(BGCol)
+        for i in range(len(frames)):
+
+
+            displaysurf.blit(frames[i],(110*i + 5, 0))
+        pygame.display.update()
+        fpsclock.tick(fps)
+
+#sheettest(dogSpriteSheet())
+
 
 if __name__ == '__main__':
     main()
