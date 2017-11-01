@@ -171,7 +171,7 @@ def gameOver():
 
 def dogSpriteSheet():
     frames = []
-    framex, framey = 110, 82
+    framex, framey = 110, 79
     sheet = dog_sheet
     sheetrect = sheet.get_rect()
     for i in range(0, 5):
@@ -180,7 +180,12 @@ def dogSpriteSheet():
     #frames.append(sheet.subsurface(0,108,109,197))
     return frames
 
-
+def spriteSheetCutter(spritesheet, sprite_w, sprite_h, locx, locy, iter_x, iter_y):
+    frames = []
+    for i in range (0, iter_x):
+        for n in range(0, iter_y):
+            frames.append(spritesheet.subsurface(locx+(i*sprite_w), locy+(n*sprite_h), sprite_w, sprite_h))
+    return frames
 
 def gameStartAnim():
     pass
@@ -195,8 +200,8 @@ def sheettest(frames):
         pygame.display.update()
         fpsclock.tick(fps)
 
+sheettest(spriteSheetCutter(dog_sheet, 110, 79, 0, 0, 5, 1))
 #sheettest(dogSpriteSheet())
-
 
 if __name__ == '__main__':
     main()
