@@ -8,6 +8,7 @@ displaysurf = pygame.display.set_mode((windowwidth,windowheight))
 master_sheet = pygame.image.load('SpriteSheet.png').convert()
 master_sheet.set_colorkey((255,0,255))
 foreground = pygame.transform.scale(master_sheet.subsurface(0,237,300,250), (windowwidth, windowheight))
+opening = pygame.image.load('Opening.png')
 
 duck_wingup = pygame.image.load('Duck.png')
 duck_wingdown = pygame.image.load('Duck_Wingdown.png')
@@ -44,6 +45,7 @@ def main():
     level = 1
     licznik = 0
     chances = 3
+    gameStart()
     gameStartAnim()
     while running:
         if level == 1:
@@ -242,6 +244,17 @@ def sheettest(frames):
             displaysurf.blit(frames[i],(110*i + 5, 0))
         pygame.display.update()
         fpsclock.tick(fps)
+
+def gameStart():
+    opening_screen = True
+    while opening_screen:
+        displaysurf.blit(opening, (0, 0))
+        pygame.display.update()
+        fpsclock.tick(fps)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                opening_screen = False
+
 
 #sheettest(spriteSheetCutter(master_sheet, 110, 79, 0, 0, 5, 2))
 #sheettest(dogSpriteSheet())
