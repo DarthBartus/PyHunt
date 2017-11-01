@@ -4,13 +4,17 @@ pygame.init()
 
 windowwidth = 600
 windowheight = 500
-foreground = pygame.image.load('DuckHuntFG.png')
+displaysurf = pygame.display.set_mode((windowwidth,windowheight))
+master_sheet = pygame.image.load('SpriteSheet.png').convert()
+master_sheet.set_colorkey((255,0,255))
+foreground = pygame.transform.scale(master_sheet.subsurface(0,237,300,250), (windowwidth, windowheight))
+
 duck_wingup = pygame.image.load('Duck.png')
 duck_wingdown = pygame.image.load('Duck_Wingdown.png')
 
 
 BGCol = (0,128,255)
-displaysurf = pygame.display.set_mode((windowwidth,windowheight))
+
 pygame.display.set_caption('Py Hunt')
 fps = 60
 fpsclock = pygame.time.Clock()
@@ -19,6 +23,7 @@ dog = pygame.image.load('Dog.png')
 duck_dead = pygame.image.load('Duck_Dead.png')
 duck_shot = pygame.image.load('Duck_Shot.png')
 dog_sheet = pygame.image.load('DogSheet.png')
+
 
 
 
@@ -39,7 +44,7 @@ def main():
     level = 1
     licznik = 0
     chances = 3
-
+    gameStartAnim()
     while running:
         if level == 1:
             duck_speed = 2
@@ -169,38 +174,76 @@ def roundlost(x, y, lives):
 def gameOver():
     pygame.quit()
 
-def dogSpriteSheet():
-    frames = []
-    framex, framey = 110, 79
-    sheet = dog_sheet
-    sheetrect = sheet.get_rect()
-    for i in range(0, 5):
-        frames.append(sheet.subsurface(framex*i, 0, framex, framey))
-    #sheet.set_clip(pygame.Rect(0,108,109,197))
-    #frames.append(sheet.subsurface(0,108,109,197))
-    return frames
 
 def spriteSheetCutter(spritesheet, sprite_w, sprite_h, locx, locy, iter_x, iter_y):
     frames = []
-    for i in range (0, iter_x):
-        for n in range(0, iter_y):
-            frames.append(spritesheet.subsurface(locx+(i*sprite_w), locy+(n*sprite_h), sprite_w, sprite_h))
+    for i in range (0, iter_y):
+        for n in range(0, iter_x):
+            frames.append(spritesheet.subsurface(locx+(n*sprite_w), locy+(i*sprite_h), sprite_w, sprite_h))
     return frames
 
 def gameStartAnim():
-    pass
+    start_frames = spriteSheetCutter(master_sheet, 110, 79, 0, 0, 5 ,2)
+    start_frames = start_frames[:-2]
+    frame_iterator = 0
 
+    anim_running = True
+    counter = 0
+    x, y = 0, 350
+    while anim_running:
+        current_frame = start_frames[frame_iterator % 5]
+        counter += 1
+        if counter%30 == 0 and counter != 0:
+            frame_iterator += 1
+        if frame_iterator == 5:
+            jumping = True
+            while jumping:
+                displaysurf.fill(BGCol)
+                displaysurf.blit(foreground, (0, 0))
+                displaysurf.blit(start_frames[5], (x, y))
+                pygame.display.update()
+                fpsclock.tick(fps)
+                pygame.time.wait(500)
+                jumping = False
+            while True:
+                x += 2
+                y -= 2
+                displaysurf.fill(BGCol)
+                displaysurf.blit(foreground, (0, 0))
+                displaysurf.blit(start_frames[6], (x, y))
+                pygame.display.update()
+                fpsclock.tick(fps)
+                if y <= 220:
+                    break
+            while True:
+                x += 2
+                y += 2
+                displaysurf.fill(BGCol)
+                displaysurf.blit(start_frames[7], (x, y))
+                displaysurf.blit(foreground, (0, 0))
+                pygame.display.update()
+                fpsclock.tick(fps)
+                if y >= 360:
+                    break
+            anim_running = False
+        displaysurf.fill(BGCol)
+        displaysurf.blit(foreground, (0,0))
+        displaysurf.blit(current_frame, (x,y))
+        x += 1
+
+        pygame.display.update()
+        fpsclock.tick(fps)
+        print(frame_iterator)
 def sheettest(frames):
     while True:
         displaysurf.fill(BGCol)
+        displaysurf.blit(foreground, (0,0))
         for i in range(len(frames)):
-
-
             displaysurf.blit(frames[i],(110*i + 5, 0))
         pygame.display.update()
         fpsclock.tick(fps)
 
-sheettest(spriteSheetCutter(dog_sheet, 110, 79, 0, 0, 5, 1))
+#sheettest(spriteSheetCutter(master_sheet, 110, 79, 0, 0, 5, 2))
 #sheettest(dogSpriteSheet())
 
 if __name__ == '__main__':
