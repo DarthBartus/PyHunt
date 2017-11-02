@@ -31,9 +31,6 @@ dog_sheet = pygame.image.load('DogSheet.png')
 
 def main():
     running = True
-    mousex = 0
-    mousey = 0
-    #leftmouseclicked = False
     rounds_left = 10
     global duckx
     duckx = 300
@@ -55,11 +52,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 running = False
-            #if event.type = pygame.MOUSEMOTION:
-            #    mousex, mousey = event.pos
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mousex, mousey = event.pos
-                #leftmouseclicked = True
                 if rounds_left >= 0:
                     shotsfired(mousex, mousey)
                     rounds_left -= 1
@@ -235,15 +230,7 @@ def gameStartAnim():
 
         pygame.display.update()
         fpsclock.tick(fps)
-        print(frame_iterator)
-def sheettest(frames):
-    while True:
-        displaysurf.fill(BGCol)
-        displaysurf.blit(foreground, (0,0))
-        for i in range(len(frames)):
-            displaysurf.blit(frames[i],(110*i + 5, 0))
-        pygame.display.update()
-        fpsclock.tick(fps)
+
 
 def gameStart():
     opening_screen = True
@@ -255,9 +242,6 @@ def gameStart():
             if event.type == pygame.KEYDOWN:
                 opening_screen = False
 
-
-#sheettest(spriteSheetCutter(master_sheet, 110, 79, 0, 0, 5, 2))
-#sheettest(dogSpriteSheet())
 
 if __name__ == '__main__':
     main()
