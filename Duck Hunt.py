@@ -45,7 +45,7 @@ def main():
     licznik = 0
     chances = 3
     gameStart()
-    #gameStartAnim()
+    gameStartAnim()
     paused = False
     while running:
         if level == 1:
