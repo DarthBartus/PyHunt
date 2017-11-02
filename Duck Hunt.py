@@ -9,7 +9,9 @@ master_sheet = pygame.image.load('SpriteSheet.png').convert()
 master_sheet.set_colorkey((255,0,255))
 foreground = pygame.transform.scale(master_sheet.subsurface(0,237,300,250), (windowwidth, windowheight))
 opening = pygame.image.load('Opening.png')
-
+duck_board = pygame.transform.scale(master_sheet.subsurface(300, 462, 138, 25), (276, 50))
+fly_away = pygame.transform.scale(master_sheet.subsurface(300, 445, 73, 17), (146, 34))
+pause_com = pygame.transform.scale(master_sheet.subsurface(300, 412, 49, 33), (98, 66))
 duck_wingup = pygame.image.load('Duck.png')
 duck_wingdown = pygame.image.load('Duck_Wingdown.png')
 
@@ -19,7 +21,7 @@ BGCol = (0,128,255)
 pygame.display.set_caption('Py Hunt')
 fps = 60
 fpsclock = pygame.time.Clock()
-bullet = pygame.image.load('bullet.png')
+bullet = pygame.transform.scale(master_sheet.subsurface(447, 479, 3, 8), (6, 14))
 dog = pygame.image.load('Dog.png')
 duck_dead = pygame.image.load('Duck_Dead.png')
 duck_shot = pygame.image.load('Duck_Shot.png')
@@ -43,7 +45,8 @@ def main():
     licznik = 0
     chances = 3
     gameStart()
-    gameStartAnim()
+    #gameStartAnim()
+    paused = False
     while running:
         if level == 1:
             duck_speed = 2
@@ -77,6 +80,17 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 rounds_left = 10
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                paused = not paused
+                while paused:
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                            paused = not paused
+                    displaysurf.fill(BGCol)
+                    displaysurf.blit(foreground, (0, 0))
+                    displaysurf.blit(pause_com, (251, 217))
+                    pygame.display.update()
+                    fpsclock.tick(fps)
 
         if duckx <= 0 or duckx >= 568:
             duckx_mult = duckx_mult*(-1)
@@ -95,8 +109,9 @@ def main():
         if duckx_mult == -1:
             displaysurf.blit(pygame.transform.flip(duck, True, False), (duckx, ducky))
         displaysurf.blit(foreground, (0, 0))
+        displaysurf.blit(duck_board, (162, 420))
         for rnd in range(rounds_left):
-            displaysurf.blit(bullet, (25*rnd + 4, 420))
+            displaysurf.blit(bullet, (245 + (rnd*6), 450))
         pygame.display.update()
         fpsclock.tick(fps)
 
@@ -164,6 +179,40 @@ def roundlost(x, y, lives):
         pygame.display.update()
         fpsclock.tick(fps)
         i += 1
+
+    displaysurf.fill(BGCol)
+    displaysurf.blit(foreground, (0, 0))
+    displaysurf.blit(fly_away, (227, 233))
+    pygame.display.update()
+    fpsclock.tick(fps)
+    pygame.time.wait(1500)
+
+
+    dogx = 256
+    dogy = 330
+    dog_frames = spriteSheetCutter(master_sheet, 110, 79, 0, 158, 2, 1)
+    dog_iter = 0
+    dog_counter = 0
+    while dogy > 250:
+        displaysurf.fill(BGCol)
+        displaysurf.blit(dog_frames[dog_counter % 2], (dogx, dogy))
+        displaysurf.blit(foreground, (0, 0))
+        dogy -= 1
+        dog_iter += 1
+        if dog_iter%15 == 0 and dog_iter != 0:
+            dog_counter += 1
+        pygame.display.update()
+        fpsclock.tick(fps)
+    while dogy < 330:
+        displaysurf.fill(BGCol)
+        displaysurf.blit(dog_frames[dog_counter % 2], (dogx, dogy))
+        displaysurf.blit(foreground, (0, 0))
+        dogy += 1
+        dog_iter += 1
+        if dog_iter%15 == 0 and dog_iter != 0:
+            dog_counter += 1
+        pygame.display.update()
+        fpsclock.tick(fps)
     lives -= 1
 
     return lives
